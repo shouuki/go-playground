@@ -2,7 +2,6 @@ package logging
 
 import (
 	"io"
-	"sync"
 	"sync/atomic"
 )
 
@@ -28,24 +27,6 @@ func (w *writerHolder) Write(p []byte) (n int, err error) {
 
 func newWriterHolder(writer io.Writer) *writerHolder {
 	return &writerHolder{
-		writer: writer,
-	}
-}
-
-type SyncWriter struct {
-	mutex  sync.Mutex
-	writer io.Writer
-}
-
-func (w *SyncWriter) Write(p []byte) (n int, err error) {
-	w.mutex.Lock()
-	defer w.mutex.Unlock()
-	return w.writer.Write(p)
-}
-
-func NewSyncWriter(writer io.Writer) *SyncWriter {
-	return &SyncWriter{
-		mutex:  sync.Mutex{},
 		writer: writer,
 	}
 }
