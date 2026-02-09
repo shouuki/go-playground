@@ -89,6 +89,6 @@ func WithWriter(writer io.Writer) HandlerOption {
 		if options.Writer == nil {
 			options.Writer = new(atomicWriter)
 		}
-		options.Writer.Set(NewSyncWriter(writer))
+		options.Writer.Set(newWriterHolder(writer))
 	}
 }

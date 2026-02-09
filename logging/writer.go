@@ -18,6 +18,20 @@ func (w *atomicWriter) Write(p []byte) (n int, err error) {
 	return w.writer.Load().(io.Writer).Write(p)
 }
 
+type writerHolder struct {
+	writer io.Writer
+}
+
+func (w *writerHolder) Write(p []byte) (n int, err error) {
+	return w.writer.Write(p)
+}
+
+func newWriterHolder(writer io.Writer) *writerHolder {
+	return &writerHolder{
+		writer: writer,
+	}
+}
+
 type SyncWriter struct {
 	mutex  sync.Mutex
 	writer io.Writer

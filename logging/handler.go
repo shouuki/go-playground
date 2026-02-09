@@ -64,7 +64,7 @@ func NewUnifiedLogHandler(options ...HandlerOption) *UnifiedLogHandler {
 	}
 	if opts.Writer == nil {
 		opts.Writer = new(atomicWriter)
-		opts.Writer.Set(NewSyncWriter(os.Stdout))
+		opts.Writer.Set(newWriterHolder(os.Stdout))
 	}
 
 	attrs := []slog.Attr{slog.String(logSpecVersionKey, opts.LogSpecVersion)}
