@@ -23,11 +23,11 @@ func CurrentRoutineName() string {
 	return fmt.Sprintf("goroutine %d", CurrentRoutineId())
 }
 
-// CurrentPackageName return current package import path, for example go-playground/utility.
-func CurrentPackageName() (string, error) {
+// CurrentPackagePath return current package import path, for example go-playground/utility.
+func CurrentPackagePath() (string, error) {
 	pc, _, _, ok := runtime.Caller(1)
 	if !ok {
-		return "", errors.New("package name not resolvable")
+		return "", errors.New("package path not resolvable")
 	}
 	modulePath := ""
 	packageDir := ""
