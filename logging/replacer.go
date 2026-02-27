@@ -54,7 +54,7 @@ func (r *sourceAttrReplacer) replace(groups []string, attr slog.Attr) slog.Attr 
 			if key == "" {
 				key = slog.SourceKey
 			}
-			return slog.String(key, fmt.Sprintf("%v(%v:%v)", src.Function, src.File, src.Line))
+			return slog.String(key, fmt.Sprintf("%v [%v:%v]", src.Function, src.File, src.Line))
 		}
 	}
 	return attr
