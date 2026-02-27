@@ -6,8 +6,9 @@ import (
 )
 
 var (
-	SystemError       = NewErrorCode("ERR0001", "System Error: {0}")
-	InvalidParamError = NewErrorCode("ERR0002", "Invalid Parameter: {0}")
+	SystemErrorCode       = NewErrorCode("ERR0001", "{0}")
+	BusinessErrorCode     = NewErrorCode("ERR0002", "{0}")
+	InvalidParamErrorCode = NewErrorCode("ERR0003", "{0}")
 )
 
 type ErrorCode interface {
