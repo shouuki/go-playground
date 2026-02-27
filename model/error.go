@@ -43,3 +43,53 @@ func NewErrorCode(code string, message string) ErrorCode {
 		message: message,
 	}
 }
+
+type baseError struct {
+	code  ErrorCode
+	args  []any
+	cause error
+}
+
+func (e *baseError) Error() string {
+	if e.cause != nil {
+		return fmt.Sprintf("%s: %v", e.code.Message(e.args...), e.cause)
+	}
+	return e.code.Message(e.args...)
+}
+
+func (e *baseError) ErrorCode() ErrorCode {
+	return e.code
+}
+
+func (e *baseError) Args() []any {
+	return e.args
+}
+
+func (e *baseError) Unwrap() error {
+	return e.cause
+}
+
+// AppError represents all error that occurred in this application.
+type AppError struct {
+	baseError
+}
+
+func NewAppError(code ErrorCode, args ...any) *AppError {
+	return &AppError{
+		baseError: baseError{
+			code:  code,
+			args:  args,
+			cause: nil,
+		},
+	}
+}
+
+func WrapAppError(cause error, code ErrorCode, args ...any) *AppError {
+	return &AppError{
+		baseError: baseError{
+			code:  code,
+			args:  args,
+			cause: cause,
+		},
+	}
+}
