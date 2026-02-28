@@ -8,10 +8,9 @@ import (
 )
 
 // SendResponseJson marshals the given value v to JSON and writes it to the [http.ResponseWriter].
-// It sets the Content-Type header to application/json and the HTTP status code to statusCode.
+// It sets the Content-Type header to application/json
 // If marshaling or writing the JSON fails, it returns an error.
-func SendResponseJson(resp http.ResponseWriter, statusCode int, v any) error {
-	resp.WriteHeader(statusCode)
+func SendResponseJson(resp http.ResponseWriter, v any) error {
 	resp.Header().Add("Content-Type", "application/json")
 
 	bytes, err := json.Marshal(v)
@@ -24,18 +23,18 @@ func SendResponseJson(resp http.ResponseWriter, statusCode int, v any) error {
 	return nil
 }
 
-// WriteResponseEntity writes a successful [model.ResponseEntity] with the given statusCode and body to the [http.ResponseWriter].
-func WriteResponseEntity(resp http.ResponseWriter, statusCode int, body ...any) error {
+// WriteResponseEntity wraps given body to a [model.ResponseEntity] with successful returnCode and then writes it to the [http.ResponseWriter].
+func WriteResponseEntity(resp http.ResponseWriter, body ...any) error {
 	if len(body) == 0 {
-		return SendResponseJson(resp, statusCode, model.Success())
+		return SendResponseJson(resp, model.Success())
 	}
-	return SendResponseJson(resp, statusCode, model.SuccessWithBody(body[0]))
+	return SendResponseJson(resp, model.SuccessWithBody(body[0]))
 }
 
-// WriteErrorResponseEntity writes a failure [model.ResponseEntity] with the given statusCode and body to the [http.ResponseWriter].
+// WriteFailedResponseEntity wraps given body to a [model.ResponseEntity] with failed returnCode and then writes it to the [http.ResponseWriter].
 //
 // Field named errorMsg in [model.ResponseEntity] is calculated from the given [error].
-func WriteErrorResponseEntity(resp http.ResponseWriter, statusCode int, err error, body ...any) error {
+func WriteFailedResponseEntity(resp http.ResponseWriter, err error, body ...any) error {
 	var entity *model.ResponseEntity[any]
 	if appError, ok := err.(*model.AppError); ok {
 		entity = model.Failed(appError.ErrorCode(), appError.Args()...)
@@ -45,5 +44,5 @@ func WriteErrorResponseEntity(resp http.ResponseWriter, statusCode int, err erro
 	if len(body) > 0 {
 		entity.Body = body[0]
 	}
-	return SendResponseJson(resp, statusCode, entity)
+	return SendResponseJson(resp, entity)
 }
